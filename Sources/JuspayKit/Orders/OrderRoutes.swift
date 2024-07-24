@@ -31,6 +31,8 @@ public struct JuspayOrderRoutes: OrderRoutes {
                 throw JuspayError.serverError(message: "Server error during order creation: \(message)")
             case .orderCreationFailed(let message):
                 throw JuspayError.orderCreationFailed(message: message)
+            case .refundCreationFailed(message: let message):
+                throw JuspayError.refundCreationFailed(message: message)
             }
         }
     }
