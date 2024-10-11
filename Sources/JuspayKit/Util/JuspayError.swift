@@ -1,17 +1,48 @@
 import Foundation
 
+/// Represents errors that can occur during interactions with the Juspay payment gateway.
+///
+/// This enumeration conforms to both `Error` and `Codable` protocols, allowing it to be used
+/// for error handling and serialization/deserialization in network communications.
+///
+/// - Note: The `Codable` conformance uses a custom implementation to handle the various error types.
 public enum JuspayError: Error, Codable {
+    /// Indicates that the input provided to an operation was invalid.
+    /// - Parameter message: A description of why the input was considered invalid.
     case invalidInput(message: String)
+    
+    /// Indicates that authentication with the Juspay API failed.
     case authenticationFailed
+    
+    /// Represents a server-side error reported by the Juspay API.
+    /// - Parameter message: A description of the server error.
     case serverError(message: String)
+    
+    /// Indicates that an attempt to create an order failed.
+    /// - Parameter message: A description of why the order creation failed.
     case orderCreationFailed(message: String)
+    
+    /// Indicates that an attempt to create a refund failed.
+    /// - Parameter message: A description of why the refund creation failed.
     case refundCreationFailed(message: String)
+
+    /// Indicates that the response from the API was invalid or unexpected.
+    case invalidResponse
+
+    // MARK: - Codable Implementation
 
     private enum CodingKeys: String, CodingKey {
         case type, message
     }
 
-    public init(from decoder: Decoder) throws {
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer is part of the `Decodable` protocol implementation. It decodes the error type
+    /// and associated message (if any) from the provided decoder.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    /// - Throws: `DecodingError.dataCorrupted` if an unknown error type is encountered.
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
         switch type {
@@ -34,7 +65,14 @@ public enum JuspayError: Error, Codable {
         }
     }
 
-    public func encode(to encoder: Encoder) throws {
+    /// Encodes this value into the given encoder.
+    ///
+    /// This function is part of the `Encodable` protocol implementation. It encodes the error type
+    /// and associated message (if any) into the provided encoder.
+    ///
+    /// - Parameter encoder: The encoder to write data to.
+    /// - Throws: Any error that occurs during encoding.
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
         case .invalidInput(let message):
@@ -51,6 +89,8 @@ public enum JuspayError: Error, Codable {
         case .refundCreationFailed(let message):
             try container.encode("refund_creation_failed", forKey: .type)
             try container.encode(message, forKey: .message)
+        case .invalidResponse:
+            try container.encode("invalid_response", forKey: .type)
         }
     }
 }
