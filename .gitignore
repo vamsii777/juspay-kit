@@ -10,3 +10,5 @@ DerivedData/
 .swiftpm
 Package.pins
 Package.resolved
+staged_diff.txt
+.vscode/*
