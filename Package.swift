@@ -28,14 +28,17 @@ let package = Package(
             .product(name: "AsyncHTTPClient", package: "async-http-client"),
             .product(name: "Crypto", package: "swift-crypto"),
             ],
-            swiftSettings: [
-                // Enable strict concurrency checking
-                .enableUpcomingFeature("StrictConcurrency"),
-                // Enable existential any
-                .enableUpcomingFeature("ExistentialAny"),
-            ]),
+            swiftSettings: swiftSettings),
         .testTarget(
             name: "JuspayKitTests",
             dependencies: ["JuspayKit"]),
     ]
 )
+
+var swiftSettings: [SwiftSetting] {
+    [
+        .enableUpcomingFeature("StrictConcurrency"),
+        .enableUpcomingFeature("ExistentialAny"),
+        .enableUpcomingFeature("FullTypedThrows"),
+    ]
+}
