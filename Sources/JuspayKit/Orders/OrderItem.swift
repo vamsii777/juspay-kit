@@ -6,7 +6,7 @@ import Foundation
 /// including its status, amount, customer details, and payment information.
 public struct Order: Codable, Sendable {
     /// The unique identifier for the order in the Juspay system.
-    public let id: String
+    public let id: String?
 
     /// The order identifier provided by the merchant.
     public let orderId: String
@@ -95,6 +95,35 @@ public struct Order: Codable, Sendable {
     /// Information about the card used for payment, if applicable.
     /// This property is optional and may be `nil`.
     public let card: CardInfo?
+
+    public init(id: String? = nil, orderId: String, status: String, statusId: Int, amount: Double, dateCreated: Date, customerEmail: String, customerPhone: String, customerId: String, merchantId: String, currency: String, returnUrl: String? = nil, productId: String? = nil, txnId: String? = nil, paymentMethodType: String? = nil, paymentMethod: String? = nil, authType: String? = nil, refunded: Bool, amountRefunded: Double, paymentLinks: PaymentLinks? = nil, refunds: [Refund]? = nil, txnUuid: String? = nil, txnDetail: TransactionDetail? = nil, gatewayId: Int? = nil, gatewayReferenceId: String? = nil, card: CardInfo? = nil) {
+        self.id = id
+        self.orderId = orderId
+        self.status = status
+        self.statusId = statusId
+        self.amount = amount
+        self.dateCreated = dateCreated
+        self.customerEmail = customerEmail
+        self.customerPhone = customerPhone
+        self.customerId = customerId
+        self.merchantId = merchantId
+        self.currency = currency
+        self.returnUrl = returnUrl
+        self.productId = productId
+        self.txnId = txnId
+        self.paymentMethodType = paymentMethodType
+        self.paymentMethod = paymentMethod
+        self.authType = authType
+        self.refunded = refunded
+        self.amountRefunded = amountRefunded
+        self.paymentLinks = paymentLinks
+        self.refunds = refunds
+        self.txnUuid = txnUuid
+        self.txnDetail = txnDetail
+        self.gatewayId = gatewayId
+        self.gatewayReferenceId = gatewayReferenceId
+        self.card = card
+    }
 }
 
 /// A structure representing the response received when creating a new order.
@@ -116,6 +145,15 @@ public struct OrderCreationResponse: Codable, Sendable {
 
     /// Additional Juspay-specific information for the newly created order.
     public let juspay: JuspayInfo
+
+    public init(status: String, statusId: Int, id: String, orderId: String, paymentLinks: PaymentLinks, juspay: JuspayInfo) {
+        self.status = status
+        self.statusId = statusId
+        self.id = id
+        self.orderId = orderId
+        self.paymentLinks = paymentLinks
+        self.juspay = juspay
+    }
 }
 
 /// A structure containing links to different payment interfaces.
@@ -128,6 +166,12 @@ public struct PaymentLinks: Codable, Sendable {
 
     /// The URL for the iframe-based payment interface.
     public let iframe: String
+
+    public init(web: String, mobile: String, iframe: String) {
+        self.web = web
+        self.mobile = mobile
+        self.iframe = iframe
+    }
 }
 
 /// A structure representing a refund associated with an order.
@@ -172,6 +216,21 @@ public struct Refund: Codable, Sendable {
     /// An error code, if the refund encountered any issues.
     /// This property is optional and may be `nil`.
     public let errorCode: String?
+
+    public init(uniqueRequestId: String, status: String, sentToGateway: Bool, refundType: String, refundSource: String? = nil, ref: String? = nil, initiatedBy: String? = nil, id: String, amount: Double, created: Date, errorMessage: String? = nil, errorCode: String? = nil) {
+        self.uniqueRequestId = uniqueRequestId
+        self.status = status
+        self.sentToGateway = sentToGateway
+        self.refundType = refundType
+        self.refundSource = refundSource
+        self.ref = ref
+        self.initiatedBy = initiatedBy
+        self.id = id
+        self.amount = amount
+        self.created = created
+        self.errorMessage = errorMessage
+        self.errorCode = errorCode
+    }
 }
 
 /// A structure containing detailed information about a transaction.
@@ -201,6 +260,17 @@ public struct TransactionDetail: Codable, Sendable {
     /// An error message, if the transaction encountered any issues.
     /// This property is optional and may be `nil`.
     public let errorMessage: String?
+
+    public init(txnId: String, orderId: String, status: String, errorCode: String? = nil, currency: String, txnUuid: String, gateway: String, errorMessage: String? = nil) {
+        self.txnId = txnId
+        self.orderId = orderId
+        self.status = status
+        self.errorCode = errorCode
+        self.currency = currency
+        self.txnUuid = txnUuid
+        self.gateway = gateway
+        self.errorMessage = errorMessage
+    }
 }
 
 /// A structure containing information about the card used for payment.
@@ -250,4 +320,19 @@ public struct CardInfo: Codable, Sendable {
     /// The brand of the card (e.g., "VISA", "MASTERCARD").
     /// This property is optional and may be `nil`.
     public let cardBrand: String?
+
+    public init(expiryYear: String? = nil, cardReference: String? = nil, expiryMonth: String? = nil, savedToLocker: Bool, nameOnCard: String? = nil, cardIssuer: String? = nil, lastFourDigits: String? = nil, usingSavedCard: Bool, cardFingerprint: String? = nil, cardIsin: String? = nil, cardType: String? = nil, cardBrand: String? = nil) {
+        self.expiryYear = expiryYear
+        self.cardReference = cardReference
+        self.expiryMonth = expiryMonth
+        self.savedToLocker = savedToLocker
+        self.nameOnCard = nameOnCard
+        self.cardIssuer = cardIssuer
+        self.lastFourDigits = lastFourDigits
+        self.usingSavedCard = usingSavedCard
+        self.cardFingerprint = cardFingerprint
+        self.cardIsin = cardIsin
+        self.cardType = cardType
+        self.cardBrand = cardBrand
+    }
 }
