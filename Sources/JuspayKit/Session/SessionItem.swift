@@ -1,6 +1,6 @@
 import Foundation
 
-public enum SessionAction: String, Codable {
+public enum SessionAction: String, Codable, Sendable {
     case paymentPage = "paymentPage"
     case paymentManagement = "paymentManagement"
 }
@@ -152,76 +152,74 @@ public struct SessionResponse: Codable, Sendable {
 
     /// Payload for SDK integration.
     public let sdkPayload: SDKPayload
+}
 
-    /// A structure containing payment-related links.
-    public struct PaymentLinks: Codable, Sendable {
-        /// The URL for web-based payment.
-        public let web: String
-    }
 
-    /// A structure containing payload information for SDK integration.
-    public struct SDKPayload: Codable, Sendable {
-        /// The unique identifier for this request.
-        public let requestId: String
+/// A structure containing payload information for SDK integration.
+public struct SDKPayload: Codable, Sendable {
+    /// The unique identifier for this request.
+    public let requestId: String
 
-        /// The service being used (e.g., "in.juspay.hyperpay").
-        public let service: String
+    /// The service being used (e.g., "in.juspay.hyperpay").
+    public let service: String
 
-        /// The main payload containing session details.
-        public let payload: Payload
+    /// The main payload containing session details.
+    public let payload: Payload
 
-        /// A structure representing the detailed payload for SDK integration.
-        public struct Payload: Codable, Sendable {
-            /// The client ID for the payment.
-            public let clientId: String
+    /// A structure representing the detailed payload for SDK integration.
+    public struct Payload: Codable, Sendable {
+        /// The client ID for the payment.
+        public let clientId: String?
 
-            /// The amount of the transaction.
-            public let amount: String
+        /// The amount of the transaction.
+        public let amount: String?
 
-            /// The ID of the merchant.
-            public let merchantId: String
+        /// The ID of the merchant.
+        public let merchantId: String?
 
-            /// The authentication token for the client.
-            public let clientAuthToken: String
+        /// The authentication token for the client.
+        public let clientAuthToken: String?
 
-            /// The expiry time of the client authentication token.
-            public let clientAuthTokenExpiry: String
+        /// The expiry time of the client authentication token.
+        public let clientAuthTokenExpiry: String?
 
-            /// The environment in which the transaction is taking place (e.g., "sandbox", "production").
-            public let environment: String
+        /// The environment in which the transaction is taking place (e.g., "sandbox", "production").
+        public let environment: String?
 
-            /// Options for getting UPI deep links.
-            public let optionsGetUpiDeepLinks: String
+        /// Options for getting UPI deep links.
+        public let optionsGetUpiDeepLinks: String?
 
-            /// The last name of the customer.
-            public let lastName: String
+        /// The last name of the customer.
+        public let lastName: String?
 
-            /// The action to be performed (e.g., "AUTHORIZE", "CAPTURE").
-            public let action: String
+        /// The action to be performed (e.g., "AUTHORIZE", "CAPTURE").
+        public let action: SessionAction?
 
-            /// The unique identifier for the customer.
-            public let customerId: String
+        /// The unique identifier for the customer.
+        public let customerId: String?
 
-            /// The URL to which the customer will be redirected after the payment process.
-            public let returnUrl: String
+        /// The URL to which the customer will be redirected after the payment process.
+        public let returnUrl: String?
 
-            /// The currency code for the transaction.
-            public let currency: String
+        /// The currency code for the transaction.
+        public let currency: String?
 
-            /// The first name of the customer.
-            public let firstName: String
+        /// The first name of the customer.
+        public let firstName: String?
 
-            /// The phone number of the customer.
-            public let customerPhone: String
+        /// The phone number of the customer.
+        public let customerPhone: String?
 
-            /// The email address of the customer.
-            public let customerEmail: String
+        /// The email address of the customer.
+        public let customerEmail: String?
 
-            /// The unique identifier for the order.
-            public let orderId: String
+        /// The unique identifier for the order.
+        public let orderId: String?
+        
+        /// The service
+        public let service: String?
 
-            /// A description of the transaction.
-            public let description: String
-        }
+        /// A description of the transaction.
+        public let description: String?
     }
 }
