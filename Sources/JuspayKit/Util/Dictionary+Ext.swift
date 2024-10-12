@@ -15,12 +15,12 @@ public extension Dictionary {
     ///   print(params.queryParameters) // Outputs: "name=John&age=30"
     ///   ```
     var queryParameters: String {
-        self.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
+        map { "\($0.key)=\($0.value)" }.joined(separator: "&")
     }
 }
 
 /// Extension on Dictionary specifically for String keys and Any values, providing URL-safe encoding.
-public extension Dictionary where Key == String, Value == Any {
+public extension [String: Any] {
     /// Encodes the dictionary into a URL-safe query string.
     ///
     /// This method creates a percent-encoded string representation of the dictionary,
@@ -37,7 +37,7 @@ public extension Dictionary where Key == String, Value == Any {
     ///   print(params.percentEncoded()) // Outputs: "name=John%20Doe&query=Swift%20%26%20Objective-C"
     ///   ```
     func percentEncoded() -> String {
-        return self.map { key, value in
+        map { key, value in
             let escapedKey = key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? key
             let escapedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "\(value)"
             return escapedKey + "=" + escapedValue

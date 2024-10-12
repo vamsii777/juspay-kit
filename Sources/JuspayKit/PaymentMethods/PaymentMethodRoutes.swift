@@ -25,17 +25,17 @@ public protocol PaymentMethodRoutes: JuspayAPIRoute {
 public struct JuspayPaymentMethodRoutes: PaymentMethodRoutes {
     /// The HTTP headers to be sent with each request.
     public var headers: HTTPHeaders = [:]
-    
+
     /// The API handler responsible for making network requests.
     private let apiHandler: JuspayAPIHandler
-    
+
     /// Initializes a new instance of `JuspayPaymentMethodRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` instance to use for API requests.
     init(apiHandler: JuspayAPIHandler) {
         self.apiHandler = apiHandler
     }
-    
+
     /// Retrieves a list of available payment methods from the Juspay system.
     ///
     /// This method constructs a query string based on the provided parameters and sends a GET request
