@@ -47,6 +47,40 @@ public struct Session: Codable, Sendable {
     /// Optional settings for creating a mandate.
     public let options: Options?
 
+    /// Initializes a new instance of the `Session` struct.
+    ///
+    /// - Parameters:
+    ///   - orderId: The unique identifier for the order associated with this session.
+    ///   - amount: The total amount for the transaction, represented as a string.
+    ///   - customerId: The unique identifier for the customer.
+    ///   - customerEmail: The email address of the customer.
+    ///   - customerPhone: The phone number of the customer.
+    ///   - paymentPageClientId: The client ID for the payment page.
+    ///   - action: The action to be performed in this session (e.g., "AUTHORIZE", "CAPTURE").
+    ///   - returnUrl: The URL to which the customer will be redirected after the payment process.
+    ///   - description: An optional description of the transaction.
+    ///   - firstName: The optional first name of the customer.
+    ///   - lastName: The optional last name of the customer.
+    ///   - currency: The optional currency code for the transaction.
+    ///   - metadata: Optional additional metadata associated with the session.
+    ///   - options: Optional settings for creating a mandate.
+    public init(orderId: String, amount: String, customerId: String, customerEmail: String, customerPhone: String, paymentPageClientId: String, action: String, returnUrl: String, description: String? = nil, firstName: String? = nil, lastName: String? = nil, currency: String? = nil, metadata: [String: String]? = nil, options: Options? = nil) {
+        self.orderId = orderId
+        self.amount = amount
+        self.customerId = customerId
+        self.customerEmail = customerEmail
+        self.customerPhone = customerPhone
+        self.paymentPageClientId = paymentPageClientId
+        self.action = action
+        self.returnUrl = returnUrl
+        self.description = description
+        self.firstName = firstName
+        self.lastName = lastName
+        self.currency = currency
+        self.metadata = metadata
+        self.options = options
+    }
+
     /// A structure representing options for creating a mandate.
     public struct Options: Codable, Sendable {
         /// Indicates whether to create a mandate for this session.
@@ -72,6 +106,28 @@ public struct Session: Codable, Sendable {
 
         /// Indicates whether to block funds for the mandate.
         public let mandateBlockFunds: Bool?
+
+        /// Initializes a new instance of the `Options` struct.
+        ///
+        /// - Parameters:
+        ///   - createMandate: Indicates whether to create a mandate for this session.
+        ///   - mandateMaxAmount: The maximum amount allowed for the mandate.
+        ///   - mandateStartDate: The start date of the mandate.
+        ///   - mandateEndDate: The end date of the mandate.
+        ///   - mandateFrequency: The frequency of the mandate (e.g., "DAILY", "WEEKLY", "MONTHLY").
+        ///   - mandateRuleValue: The value associated with the mandate rule.
+        ///   - mandateAmountRule: The rule for the mandate amount.
+        ///   - mandateBlockFunds: Indicates whether to block funds for the mandate.
+        public init(createMandate: String? = nil, mandateMaxAmount: String? = nil, mandateStartDate: String? = nil, mandateEndDate: String? = nil, mandateFrequency: String? = nil, mandateRuleValue: String? = nil, mandateAmountRule: String? = nil, mandateBlockFunds: Bool? = nil) {
+            self.createMandate = createMandate
+            self.mandateMaxAmount = mandateMaxAmount
+            self.mandateStartDate = mandateStartDate
+            self.mandateEndDate = mandateEndDate
+            self.mandateFrequency = mandateFrequency
+            self.mandateRuleValue = mandateRuleValue
+            self.mandateAmountRule = mandateAmountRule
+            self.mandateBlockFunds = mandateBlockFunds
+        }
     }
 }
 
