@@ -57,13 +57,4 @@ public actor JuspayClient {
         refunds = JuspayRefundRoutes(apiHandler: apiHandler)
         health = JuspayHealthRoutes(apiHandler: apiHandler)
     }
-
-    /// Performs a health check on the Juspay API.
-    ///
-    /// - Returns: A boolean indicating whether the API is healthy.
-    /// - Throws: An error if the health check fails.
-    public func performHealthCheck() async throws -> Bool {
-        // Implement health check logic here
-        true
-    }
 }
