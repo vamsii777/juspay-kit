@@ -2,11 +2,11 @@ import Foundation
 
 /// Represents errors that can occur during interactions with the Juspay payment gateway.
 ///
-/// This enumeration conforms to both `Error` and `Codable` protocols, allowing it to be used
-/// for error handling and serialization/deserialization in network communications.
+/// This enumeration conforms to `Error`, `Codable`, and `Sendable` protocols, allowing it to be used
+/// for error handling, serialization/deserialization in network communications, and safe concurrency.
 ///
 /// - Note: The `Codable` conformance uses a custom implementation to handle the various error types.
-public enum JuspayError: Error, Codable {
+public enum JuspayError: Error, Codable, Sendable {
     /// Indicates that the input provided to an operation was invalid.
     /// - Parameter message: A description of why the input was considered invalid.
     case invalidInput(message: String)
