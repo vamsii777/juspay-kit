@@ -1,5 +1,5 @@
-@testable import JuspayKit
 import XCTest
+@testable import JuspayKit
 
 final class JuspayKitTests: XCTestCase {
     func testExample() throws {

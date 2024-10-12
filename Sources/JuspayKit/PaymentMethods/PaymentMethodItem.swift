@@ -4,10 +4,10 @@ import Foundation
 public struct PaymentMethod: Codable, Sendable {
     /// The type of the payment method.
     public let paymentMethodType: String
-
+    
     /// The identifier of the payment method.
     public let paymentMethod: String
-
+    
     /// A description of the payment method.
     public let description: String
 }
@@ -22,7 +22,7 @@ public struct EmadatePaymentMethod: Codable, Sendable {
 public struct DirectWalletDebitSupportedPaymentMethod: Codable, Sendable {
     /// An array of payment methods that support direct wallet debit.
     public let paymentMethods: [PaymentMethod]
-
+    
     /// A boolean indicating whether wallet direct debit is supported.
     public let walletDirectDebitSupport: Bool
 }
@@ -37,13 +37,13 @@ public struct GatewayReferenceIDPaymentMethod: Codable, Sendable {
 public struct GatewayReferencePaymentMethod: Codable, Sendable {
     /// An array of supported reference IDs.
     public let supportedReferenceIds: [String]
-
+    
     /// The type of the payment method.
     public let paymentMethodType: String
-
+    
     /// The identifier of the payment method.
     public let paymentMethod: String
-
+    
     /// A description of the payment method.
     public let description: String
 }
@@ -58,16 +58,16 @@ public struct OutagePaymentMethod: Codable, Sendable {
 public struct Outage: Codable, Sendable {
     /// The current status of the outage.
     public let status: String
-
+    
     /// The identifier of the affected payment method.
     public let paymentMethod: String
-
+    
     /// The type of the affected payment method.
     public let paymentMethodType: String
-
+    
     /// The Juspay bank code associated with the outage.
     public let juspayBankCode: String
-
+    
     /// A description of the outage.
     public let description: String
 }
@@ -82,19 +82,19 @@ public struct TPVPaymentMethod: Codable, Sendable {
 public struct PaymentMethodsResponse: Codable, Sendable {
     /// An array of general payment methods.
     public let paymentMethods: [PaymentMethod]
-
+    
     /// An optional array of e-mandate payment methods.
     public let emandatePaymentMethods: [PaymentMethod]?
-
+    
     /// An optional array of payment methods supporting direct wallet debit.
     public let directWalletDebitSupportedPaymentMethods: [DirectWalletDebitSupportedPaymentMethod]?
-
+    
     /// An optional array of payment methods with gateway reference IDs.
     public let gatewayReferenceIDPaymentMethods: [GatewayReferenceIDPaymentMethod]?
-
+    
     /// An optional array of outages affecting payment methods.
     public let outages: [Outage]?
-
+    
     /// An optional array of TPV payment methods.
     public let tpvPaymentMethods: [TPVPaymentMethod]?
 }

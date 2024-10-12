@@ -32,14 +32,14 @@ public struct JuspayOrderRoutes: OrderRoutes {
 
     /// The API handler responsible for making network requests.
     private let apiHandler: JuspayAPIHandler
-
+    
     /// Initializes a new instance of `JuspayOrderRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` instance to use for API requests.
     init(apiHandler: JuspayAPIHandler) {
         self.apiHandler = apiHandler
     }
-
+    
     /// Retrieves an existing order from the Juspay system.
     ///
     /// This method sends a GET request to the Juspay API to retrieve the order with the specified ID.
@@ -50,9 +50,9 @@ public struct JuspayOrderRoutes: OrderRoutes {
     ///
     /// - Throws: An error if the order retrieval fails or if there's a network issue.
     public func retrieve(orderId: String) async throws -> Order {
-        try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: headers)
+        return try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: headers)
     }
-
+    
     /// Creates a new order in the Juspay system.
     ///
     /// This method sends a POST request to the Juspay API to create a new order with the provided parameters.
@@ -72,15 +72,15 @@ public struct JuspayOrderRoutes: OrderRoutes {
             return try await apiHandler.send(method: .POST, path: "orders", body: .string(parameters.percentEncoded()), headers: headers)
         } catch let error as JuspayError {
             switch error {
-            case let .invalidInput(message):
+            case .invalidInput(let message):
                 throw JuspayError.orderCreationFailed(message: "Invalid input: \(message)")
             case .authenticationFailed:
                 throw JuspayError.authenticationFailed
-            case let .serverError(message):
+            case .serverError(let message):
                 throw JuspayError.serverError(message: "Server error during order creation: \(message)")
-            case let .orderCreationFailed(message):
+            case .orderCreationFailed(let message):
                 throw JuspayError.orderCreationFailed(message: message)
-            case let .refundCreationFailed(message: message):
+            case .refundCreationFailed(message: let message):
                 throw JuspayError.refundCreationFailed(message: message)
             case .invalidResponse:
                 throw JuspayError.invalidResponse

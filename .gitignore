@@ -12,6 +12,3 @@ Package.pins
 Package.resolved
 staged_diff.txt
 .vscode/*
-generate-package-api-docs.swift
-theme-settings.json
-public/

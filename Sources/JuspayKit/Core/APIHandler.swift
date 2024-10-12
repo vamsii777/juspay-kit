@@ -1,32 +1,32 @@
-import AsyncHTTPClient
 import Foundation
 import NIO
 import NIOFoundationCompat
 import NIOHTTP1
+import AsyncHTTPClient
 
 /// The base URL for the Juspay API in production environment.
-let APIBase = "https://api.juspay.in/"
+internal let APIBase = "https://api.juspay.in/"
 
 /// The base URL for the Juspay API in sandbox environment.
-let SandboxAPIBase = "https://sandbox.juspay.in/"
+internal let SandboxAPIBase = "https://sandbox.juspay.in/"
 
 /// The base URL for the Juspay health status API.
-let HealthStatusAPIBase = "https://status.juspay.in/"
+internal let HealthStatusAPIBase = "https://status.juspay.in/"
 
-public extension HTTPClientRequest.Body {
+extension HTTPClientRequest.Body {
     /// Creates a request body from a string.
     ///
     /// - Parameter string: The string to be used as the request body.
     /// - Returns: An `HTTPClientRequest.Body` instance.
-    static func string(_ string: String) -> Self {
+    public static func string(_ string: String) -> Self {
         .bytes(.init(string: string))
     }
-
+    
     /// Creates a request body from Data.
     ///
     /// - Parameter data: The Data to be used as the request body.
     /// - Returns: An `HTTPClientRequest.Body` instance.
-    static func data(_ data: Data) -> Self {
+    public static func data(_ data: Data) -> Self {
         .bytes(.init(data: data))
     }
 }
@@ -37,14 +37,14 @@ public enum Environment: Sendable {
     case production
     /// The sandbox environment for testing.
     case sandbox
-
+    
     /// The base URL for the selected environment.
     var baseUrl: String {
         switch self {
         case .production:
-            APIBase
+            return APIBase
         case .sandbox:
-            SandboxAPIBase
+            return SandboxAPIBase
         }
     }
 }
@@ -61,7 +61,7 @@ actor JuspayAPIHandler {
     private let environment: Environment
     /// JSON decoder for parsing API responses.
     private let decoder = JSONDecoder()
-
+    
     /// Initializes a new instance of the JuspayAPIHandler.
     ///
     /// - Parameters:
@@ -70,16 +70,15 @@ actor JuspayAPIHandler {
     ///   - merchantId: The unique identifier for the merchant.
     ///   - environment: The environment to use for API requests.
     init(
-        httpClient: HTTPClient, apiKey: String, merchantId: String, environment: Environment
-    ) {
-        self.httpClient = httpClient
-        self.apiKey = apiKey
-        self.merchantId = merchantId
-        self.environment = environment
-        decoder.dateDecodingStrategy = .iso8601
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-    }
-
+        httpClient: HTTPClient, apiKey: String, merchantId: String, environment: Environment) {
+            self.httpClient = httpClient
+            self.apiKey = apiKey
+            self.merchantId = merchantId
+            self.environment = environment
+            decoder.dateDecodingStrategy = .iso8601
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+        }
+    
     /// Sends an API request to the Juspay service.
     ///
     /// - Parameters:
@@ -96,34 +95,34 @@ actor JuspayAPIHandler {
         path: String,
         query: String = "",
         body: HTTPClientRequest.Body = .bytes(.init(string: "")),
-        headers: HTTPHeaders
-    ) async throws -> T {
-        var baseURL: String = if healthCheck == true {
-            HealthStatusAPIBase
-        } else {
-            environment.baseUrl
+        headers: HTTPHeaders) async throws -> T {
+            var baseURL: String
+            if healthCheck == true {
+                baseURL = HealthStatusAPIBase
+            } else {
+                baseURL = environment.baseUrl
+            }
+            var _headers: HTTPHeaders = [
+                "x-merchantid": merchantId,
+                "Content-Type": "application/x-www-form-urlencoded"
+            ]
+            let authString = "\(apiKey):".data(using: .utf8)!.base64EncodedString()
+            _headers.add(name: "Authorization", value: "Basic \(authString)")
+            
+            headers.forEach { _headers.replaceOrAdd(name: $0.name, value: $0.value) }
+            
+            var request = HTTPClientRequest(url: "\(baseURL)\(path)?\(query)")
+            request.headers = _headers
+            request.method = method
+            request.body = body
+            
+            let response = try await httpClient.execute(request, timeout: .seconds(60))
+            let responseData = try await response.body.collect(upTo: 1024 * 1024 * 100)
+            
+            guard response.status == .ok else {
+                let error = try self.decoder.decode(JuspayError.self, from: responseData)
+                throw error
+            }
+            return try self.decoder.decode(T.self, from: responseData)
         }
-        var _headers: HTTPHeaders = [
-            "x-merchantid": merchantId,
-            "Content-Type": "application/x-www-form-urlencoded",
-        ]
-        let authString = "\(apiKey):".data(using: .utf8)!.base64EncodedString()
-        _headers.add(name: "Authorization", value: "Basic \(authString)")
-
-        headers.forEach { _headers.replaceOrAdd(name: $0.name, value: $0.value) }
-
-        var request = HTTPClientRequest(url: "\(baseURL)\(path)?\(query)")
-        request.headers = _headers
-        request.method = method
-        request.body = body
-
-        let response = try await httpClient.execute(request, timeout: .seconds(60))
-        let responseData = try await response.body.collect(upTo: 1024 * 1024 * 100)
-
-        guard response.status == .ok else {
-            let error = try decoder.decode(JuspayError.self, from: responseData)
-            throw error
-        }
-        return try decoder.decode(T.self, from: responseData)
-    }
 }

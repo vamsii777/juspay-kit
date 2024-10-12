@@ -22,17 +22,17 @@ public protocol RefundRoutes: JuspayAPIRoute {
 public struct JuspayRefundRoutes: RefundRoutes {
     /// The HTTP headers to be sent with each request.
     public var headers: HTTPHeaders = [:]
-
+    
     /// The API handler responsible for making network requests.
     private let apiHandler: JuspayAPIHandler
-
+    
     /// Initializes a new instance of `JuspayRefundRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` instance to use for API requests.
     init(apiHandler: JuspayAPIHandler) {
         self.apiHandler = apiHandler
     }
-
+    
     /// Creates a new refund request for a specific order.
     ///
     /// This method constructs the necessary request body and headers, then sends a POST request
@@ -49,11 +49,11 @@ public struct JuspayRefundRoutes: RefundRoutes {
         let path = "orders/\(orderId)/refunds"
         var body = "unique_request_id=\(refund.uniqueRequestId)&amount=\(refund.amount)"
         body = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? body
-
+        
         var _headers = headers
         _headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
         _headers.add(name: "version", value: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none))
-
+        
         return try await apiHandler.send(method: .POST, path: path, body: .string(body), headers: _headers)
     }
 }

@@ -1,5 +1,5 @@
-import Foundation
 import NIO
+import Foundation
 import NIOHTTP1
 
 /// A protocol defining the routes for session-related operations in the Juspay API.
@@ -18,17 +18,17 @@ public protocol SessionRoutes: JuspayAPIRoute {
 public struct JuspaySessionRoutes: SessionRoutes {
     /// The HTTP headers to be included in the API requests.
     public var headers: HTTPHeaders = [:]
-
+    
     /// The API handler responsible for making network requests to the Juspay API.
     private let apiHandler: JuspayAPIHandler
-
+    
     /// Initializes a new instance of `JuspaySessionRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` to be used for making API requests.
     init(apiHandler: JuspayAPIHandler) {
         self.apiHandler = apiHandler
     }
-
+    
     /// Creates a new session by sending a POST request to the Juspay API.
     ///
     /// This method encodes the provided `Session` object into JSON and sends it to the "/session" endpoint.

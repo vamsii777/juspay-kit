@@ -10,18 +10,18 @@ public enum JuspayError: Error, Codable {
     /// Indicates that the input provided to an operation was invalid.
     /// - Parameter message: A description of why the input was considered invalid.
     case invalidInput(message: String)
-
+    
     /// Indicates that authentication with the Juspay API failed.
     case authenticationFailed
-
+    
     /// Represents a server-side error reported by the Juspay API.
     /// - Parameter message: A description of the server error.
     case serverError(message: String)
-
+    
     /// Indicates that an attempt to create an order failed.
     /// - Parameter message: A description of why the order creation failed.
     case orderCreationFailed(message: String)
-
+    
     /// Indicates that an attempt to create a refund failed.
     /// - Parameter message: A description of why the refund creation failed.
     case refundCreationFailed(message: String)
@@ -75,18 +75,18 @@ public enum JuspayError: Error, Codable {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
-        case let .invalidInput(message):
+        case .invalidInput(let message):
             try container.encode("invalid_input", forKey: .type)
             try container.encode(message, forKey: .message)
         case .authenticationFailed:
             try container.encode("authentication_failed", forKey: .type)
-        case let .serverError(message):
+        case .serverError(let message):
             try container.encode("server_error", forKey: .type)
             try container.encode(message, forKey: .message)
-        case let .orderCreationFailed(message):
+        case .orderCreationFailed(let message):
             try container.encode("order_creation_failed", forKey: .type)
             try container.encode(message, forKey: .message)
-        case let .refundCreationFailed(message):
+        case .refundCreationFailed(let message):
             try container.encode("refund_creation_failed", forKey: .type)
             try container.encode(message, forKey: .message)
         case .invalidResponse:

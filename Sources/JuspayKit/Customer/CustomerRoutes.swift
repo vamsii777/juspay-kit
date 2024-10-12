@@ -1,6 +1,6 @@
 //
 //  CustomerRoutes.swift
-//
+//  
 //
 //  Created by Vamsi Madduluri on 24/07/24.
 //
@@ -47,7 +47,7 @@ public struct JuspayCustomerRoutes: CustomerRoutes {
 
     /// The API handler responsible for making network requests.
     private let apiHandler: JuspayAPIHandler
-
+    
     /// Initializes a new instance of `JuspayCustomerRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` instance to use for API requests.
@@ -78,16 +78,16 @@ public struct JuspayCustomerRoutes: CustomerRoutes {
             "email_address": emailAddress,
             "first_name": firstName,
             "last_name": lastName,
-            "mobile_country_code": mobileCountryCode,
+            "mobile_country_code": mobileCountryCode
         ]
-
+        
         if getClientAuthToken {
             body["options.get_client_auth_token"] = "true"
         }
-
+        
         return try await apiHandler.send(method: .POST, path: "customers", body: .string(body.queryParameters), headers: headers)
     }
-
+    
     /// Retrieves an existing customer from the Juspay system.
     ///
     /// This method sends a GET request to the Juspay API to retrieve the customer information for the specified customer ID.
