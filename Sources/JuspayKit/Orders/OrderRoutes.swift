@@ -71,20 +71,7 @@ public struct JuspayOrderRoutes: OrderRoutes {
         do {
             return try await apiHandler.send(method: .POST, path: "orders", body: .string(parameters.percentEncoded()), headers: headers)
         } catch let error as JuspayError {
-            switch error {
-            case let .invalidInput(message):
-                throw JuspayError.orderCreationFailed(message: "Invalid input: \(message)")
-            case .authenticationFailed:
-                throw JuspayError.authenticationFailed
-            case let .serverError(message):
-                throw JuspayError.serverError(message: "Server error during order creation: \(message)")
-            case let .orderCreationFailed(message):
-                throw JuspayError.orderCreationFailed(message: message)
-            case let .refundCreationFailed(message: message):
-                throw JuspayError.refundCreationFailed(message: message)
-            case .invalidResponse:
-                throw JuspayError.invalidResponse
-            }
+            throw handleJuspayError(error)
         }
     }
 }

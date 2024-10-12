@@ -27,7 +27,7 @@ public protocol CustomerRoutes: JuspayAPIRoute {
     ///
     /// - Throws: An error if the customer creation fails or if there's a network issue.
     func create(objectReferenceId: String, mobileNumber: String, emailAddress: String, firstName: String, lastName: String, mobileCountryCode: String, getClientAuthToken: Bool) async throws -> Customer
-
+    
     /// Retrieves an existing customer from the Juspay system.
     ///
     /// - Parameters:
@@ -44,17 +44,17 @@ public protocol CustomerRoutes: JuspayAPIRoute {
 public struct JuspayCustomerRoutes: CustomerRoutes {
     /// The HTTP headers to be sent with each request.
     public var headers: HTTPHeaders = [:]
-
+    
     /// The API handler responsible for making network requests.
     private let apiHandler: JuspayAPIHandler
-
+    
     /// Initializes a new instance of `JuspayCustomerRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` instance to use for API requests.
     init(apiHandler: JuspayAPIHandler) {
         self.apiHandler = apiHandler
     }
-
+    
     /// Creates a new customer in the Juspay system.
     ///
     /// This method sends a POST request to the Juspay API to create a new customer with the provided information.
@@ -72,22 +72,26 @@ public struct JuspayCustomerRoutes: CustomerRoutes {
     ///
     /// - Throws: An error if the customer creation fails or if there's a network issue.
     public func create(objectReferenceId: String, mobileNumber: String, emailAddress: String, firstName: String, lastName: String, mobileCountryCode: String, getClientAuthToken: Bool = false) async throws -> Customer {
-        var body = [
-            "object_reference_id": objectReferenceId,
-            "mobile_number": mobileNumber,
-            "email_address": emailAddress,
-            "first_name": firstName,
-            "last_name": lastName,
-            "mobile_country_code": mobileCountryCode,
-        ]
-
-        if getClientAuthToken {
-            body["options.get_client_auth_token"] = "true"
+        do {
+            var body = [
+                "object_reference_id": objectReferenceId,
+                "mobile_number": mobileNumber,
+                "email_address": emailAddress,
+                "first_name": firstName,
+                "last_name": lastName,
+                "mobile_country_code": mobileCountryCode,
+            ]
+            
+            if getClientAuthToken {
+                body["options.get_client_auth_token"] = "true"
+            }
+            
+            return try await apiHandler.send(method: .POST, path: "customers", body: .string(body.queryParameters), headers: headers)
+        } catch let error as JuspayError {
+            throw handleJuspayError(error)
         }
-
-        return try await apiHandler.send(method: .POST, path: "customers", body: .string(body.queryParameters), headers: headers)
     }
-
+    
     /// Retrieves an existing customer from the Juspay system.
     ///
     /// This method sends a GET request to the Juspay API to retrieve the customer information for the specified customer ID.
@@ -100,10 +104,15 @@ public struct JuspayCustomerRoutes: CustomerRoutes {
     ///
     /// - Throws: An error if the customer retrieval fails or if there's a network issue.
     public func retrieve(customerId: String, getClientAuthToken: Bool = false) async throws -> Customer {
-        var query = ""
-        if getClientAuthToken {
-            query = "options.get_client_auth_token=true"
+        do {
+            var query = ""
+            if getClientAuthToken {
+                query = "options.get_client_auth_token=true"
+            }
+            return try await apiHandler.send(method: .GET, path: "customers/\(customerId)", query: query, headers: headers)
+            
+        } catch let error as JuspayError {
+            throw handleJuspayError(error)
         }
-        return try await apiHandler.send(method: .GET, path: "customers/\(customerId)", query: query, headers: headers)
     }
 }

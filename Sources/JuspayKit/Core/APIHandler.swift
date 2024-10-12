@@ -42,9 +42,9 @@ public enum Environment: Sendable {
     var baseUrl: String {
         switch self {
         case .production:
-            APIBase
+            return APIBase
         case .sandbox:
-            SandboxAPIBase
+            return SandboxAPIBase
         }
     }
 }
@@ -98,11 +98,7 @@ actor JuspayAPIHandler {
         body: HTTPClientRequest.Body = .bytes(.init(string: "")),
         headers: HTTPHeaders
     ) async throws -> T {
-        var baseURL: String = if healthCheck == true {
-            HealthStatusAPIBase
-        } else {
-            environment.baseUrl
-        }
+        let baseURL: String = healthCheck == true ? HealthStatusAPIBase : environment.baseUrl
         var _headers: HTTPHeaders = [
             "x-merchantid": merchantId,
             "Content-Type": "application/x-www-form-urlencoded",

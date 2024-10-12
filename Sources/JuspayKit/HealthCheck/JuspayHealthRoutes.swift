@@ -20,9 +20,17 @@ public struct JuspayHealthRoutes: HealthCheckRoutes {
     /// - Returns: A `JuspayHealthStatus` indicating the current status of the Juspay API.
     /// - Throws: An error if the health check request fails.
     public func check() async throws -> JuspayHealthStatus {
-        try await apiHandler.send(
-            healthCheck: true,
-            method: .GET, path: "/summary.json", headers: headers
-        )
+        do {
+            return try await apiHandler.send(
+                healthCheck: true,
+                method: .GET, path: "/summary.json", headers: headers
+            )
+        } catch let error as JuspayError {
+            // Handle Juspay-specific errors
+            throw error
+        } catch {
+            // Handle other errors
+            throw error
+        }
     }
 }

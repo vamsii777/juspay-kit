@@ -94,3 +94,20 @@ public enum JuspayError: Error, Codable, Sendable {
         }
     }
 }
+
+public func handleJuspayError(_ error: JuspayError) -> JuspayError {
+    switch error {
+        case let .invalidInput(message):
+            return .orderCreationFailed(message: "Invalid input: \(message)")
+        case .authenticationFailed:
+            return .authenticationFailed
+        case let .serverError(message):
+            return .serverError(message: "Server error during order creation: \(message)")
+        case let .orderCreationFailed(message):
+            return .orderCreationFailed(message: message)
+        case let .refundCreationFailed(message):
+            return .refundCreationFailed(message: message)
+        case .invalidResponse:
+            return .invalidResponse
+    }
+}
