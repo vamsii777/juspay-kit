@@ -1,51 +1,15 @@
 import Foundation
 
-/// Represents the health status of the Juspay API.
-///
-/// This structure provides information about the operational status, current status,
-/// active incidents, and ongoing maintenances affecting the Juspay API.
-public struct JuspayHealthStatus: Codable, Sendable {
-    /// Indicates whether the Juspay API is operational.
-    ///
-    /// A value of `true` means the API is functioning normally, while `false` indicates issues.
-    public let isOperational: Bool
-
-    /// The current status of the Juspay API.
-    ///
-    /// This string provides a descriptive status of the API's current state.
-    public let status: String
-
-    /// The active incidents affecting the Juspay API.
-    ///
-    /// An array of `Incident` objects representing ongoing issues or disruptions.
-    public let activeIncidents: [Incident]
-
-    /// The active maintenances affecting the Juspay API.
-    ///
-    /// An array of `Maintenance` objects representing scheduled or ongoing maintenance activities.
-    public let activeMaintenances: [Maintenance]
-
-    /// Initializes a new `JuspayHealthStatus` instance from a `JuspaySummary`.
-    ///
-    /// - Parameter summary: A `JuspaySummary` object containing the health status information.
-    init(summary: JuspaySummary) {
-        isOperational = summary.page.status == "UP"
-        status = summary.page.status
-        activeIncidents = summary.activeIncidents
-        activeMaintenances = summary.activeMaintenances
-    }
-}
-
 /// Internal structure representing the summary of Juspay's health status.
-struct JuspaySummary: Codable, Sendable {
+public struct JuspayHealthStatus: Codable, Sendable {
     /// The page information containing overall status.
     let page: Page
 
     /// List of active incidents.
-    let activeIncidents: [Incident]
+    let activeIncidents: [Incident]?
 
     /// List of active maintenances.
-    let activeMaintenances: [Maintenance]
+    let activeMaintenances: [Maintenance]?
 }
 
 /// Represents a page in the Juspay health status report.
@@ -57,7 +21,7 @@ struct Page: Codable, Sendable {
     let url: String
 
     /// The status of the page.
-    let status: String
+    let status: HealthStatus
 }
 
 /// Represents an incident affecting the Juspay API.
@@ -69,10 +33,10 @@ public struct Incident: Codable, Sendable {
     public let started: String
 
     /// The current status of the incident.
-    public let status: String
+    public let status: HealthStatus
 
     /// The impact level of the incident.
-    public let impact: String
+    public let impact: HealthStatus
 
     /// The URL for more information about the incident.
     public let url: String
@@ -87,11 +51,29 @@ public struct Maintenance: Codable, Sendable {
     public let start: String
 
     /// The current status of the maintenance.
-    public let status: String
+    public let status: HealthStatus
 
     /// The expected duration of the maintenance.
     public let duration: String
 
     /// The URL for more information about the maintenance.
     public let url: String
+}
+
+
+public enum HealthStatus: String, Codable, Sendable {
+    case up = "UP"
+    case hasIssues = "HASISSUES" 
+    case underMaintenance = "UNDERMAINTENANCE"
+    case identified = "IDENTIFIED"
+    case investigating = "INVESTIGATING"
+    case monitoring = "MONITORING"
+    case resolved = "RESOLVED"
+    case majorOutage = "MAJOROUTAGE"
+    case partialOutage = "PARTIALOUTAGE"    
+    case minorOutage = "MINOROUTAGE"     
+    case operational = "OPERATIONAL"    
+    case notStartedYet = "NOTSTARTEDYET"
+    case inProgress = "INPROGRESS"
+    case completed = "COMPLETED"    
 }
