@@ -1,5 +1,10 @@
 import Foundation
 
+public enum SessionAction: String, Codable {
+    case paymentPage = "paymentPage"
+    case paymentManagement = "paymentManagement"
+}
+
 /// A structure representing a payment session in the Juspay system.
 ///
 /// This struct encapsulates all the necessary information to initiate a payment session,
@@ -23,8 +28,8 @@ public struct Session: Codable, Sendable {
     /// The client ID for the payment page.
     public let paymentPageClientId: String
 
-    /// The action to be performed in this session (e.g., "AUTHORIZE", "CAPTURE").
-    public let action: String
+    /// The action to be performed in this session.
+    public let action: SessionAction
 
     /// The URL to which the customer will be redirected after the payment process.
     public let returnUrl: String
@@ -56,7 +61,7 @@ public struct Session: Codable, Sendable {
     ///   - customerEmail: The email address of the customer.
     ///   - customerPhone: The phone number of the customer.
     ///   - paymentPageClientId: The client ID for the payment page.
-    ///   - action: The action to be performed in this session (e.g., "AUTHORIZE", "CAPTURE").
+    ///   - action: The action to be performed in this session.
     ///   - returnUrl: The URL to which the customer will be redirected after the payment process.
     ///   - description: An optional description of the transaction.
     ///   - firstName: The optional first name of the customer.
@@ -64,7 +69,7 @@ public struct Session: Codable, Sendable {
     ///   - currency: The optional currency code for the transaction.
     ///   - metadata: Optional additional metadata associated with the session.
     ///   - options: Optional settings for creating a mandate.
-    public init(orderId: String, amount: String, customerId: String, customerEmail: String, customerPhone: String, paymentPageClientId: String, action: String, returnUrl: String, description: String? = nil, firstName: String? = nil, lastName: String? = nil, currency: String? = nil, metadata: [String: String]? = nil, options: Options? = nil) {
+    public init(orderId: String, amount: String, customerId: String, customerEmail: String, customerPhone: String, paymentPageClientId: String, action: SessionAction, returnUrl: String, description: String? = nil, firstName: String? = nil, lastName: String? = nil, currency: String? = nil, metadata: [String: String]? = nil, options: Options? = nil) {
         self.orderId = orderId
         self.amount = amount
         self.customerId = customerId
