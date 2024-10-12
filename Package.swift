@@ -9,17 +9,15 @@ let package = Package(
         .macOS(.v12),
         .iOS(.v15),
         .tvOS(.v15),
-        .watchOS(.v8),
+        .watchOS(.v8)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "JuspayKit",
-            targets: ["JuspayKit"]
-        ),
+            targets: ["JuspayKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.3.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.23.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "4.0.0"),
     ],
@@ -29,12 +27,11 @@ let package = Package(
         .target(name: "JuspayKit", dependencies: [
             .product(name: "AsyncHTTPClient", package: "async-http-client"),
             .product(name: "Crypto", package: "swift-crypto"),
-        ],
-        swiftSettings: swiftSettings),
+            ],
+            swiftSettings: swiftSettings),
         .testTarget(
             name: "JuspayKitTests",
-            dependencies: ["JuspayKit"]
-        ),
+            dependencies: ["JuspayKit"]),
     ]
 )
 
