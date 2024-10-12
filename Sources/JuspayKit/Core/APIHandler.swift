@@ -114,12 +114,20 @@ actor JuspayAPIHandler {
         request.body = body
 
         let response = try await httpClient.execute(request, timeout: .seconds(60))
-        let responseData = try await response.body.collect(upTo: 1024 * 1024 * 100)
+        let responseData = try await response.body.collect(upTo: .max)
 
         guard response.status == .ok else {
             let error = try decoder.decode(JuspayError.self, from: responseData)
             throw error
         }
+
+        // Debug print the response data in human readable format
+        // if let responseString = responseData.getString(at: responseData.readerIndex, length: responseData.readableBytes) {
+        //     print("Response Data: \(responseString)")
+        // } else {
+        //     print("Failed to decode response data to string")
+        // }
+        
         return try decoder.decode(T.self, from: responseData)
     }
 }

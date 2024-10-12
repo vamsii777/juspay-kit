@@ -156,24 +156,6 @@ public struct OrderCreationResponse: Codable, Sendable {
     }
 }
 
-/// A structure containing links to different payment interfaces.
-public struct PaymentLinks: Codable, Sendable {
-    /// The URL for the web-based payment interface.
-    public let web: String
-
-    /// The URL for the mobile-based payment interface.
-    public let mobile: String
-
-    /// The URL for the iframe-based payment interface.
-    public let iframe: String
-
-    public init(web: String, mobile: String, iframe: String) {
-        self.web = web
-        self.mobile = mobile
-        self.iframe = iframe
-    }
-}
-
 /// A structure representing a refund associated with an order.
 public struct Refund: Codable, Sendable {
     /// A unique identifier for the refund request.
