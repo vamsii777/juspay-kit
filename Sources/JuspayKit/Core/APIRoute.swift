@@ -2,7 +2,7 @@ import NIO
 import NIOHTTP1
 
 /// A protocol representing a route for the Juspay API.
-public protocol JuspayAPIRoute {
+public protocol JuspayAPIRoute: Sendable {
     /// The HTTP headers associated with the API route.
     var headers: HTTPHeaders { get set }
 
