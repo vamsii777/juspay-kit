@@ -1,4 +1,4 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -18,7 +18,7 @@ let package = Package(
             targets: ["JuspayKit"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.23.0"),
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "4.0.0"),
     ],
     targets: [
@@ -26,14 +26,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(name: "JuspayKit", dependencies: [
             .product(name: "AsyncHTTPClient", package: "async-http-client"),
-            .product(name: "Crypto", package: "swift-crypto"),
-            ],
-            swiftSettings: [
-                // Enable strict concurrency checking
-                .enableUpcomingFeature("StrictConcurrency"),
-                // Enable existential any
-                .enableUpcomingFeature("ExistentialAny"),
-            ]),
+            .product(name: "Crypto", package: "swift-crypto"),]),
         .testTarget(
             name: "JuspayKitTests",
             dependencies: ["JuspayKit"]),
