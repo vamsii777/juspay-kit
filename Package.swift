@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "JuspayKit",
+    name: "juspay-kit",
     platforms: [
         .macOS(.v12),
         .iOS(.v15),
