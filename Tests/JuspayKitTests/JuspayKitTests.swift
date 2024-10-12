@@ -51,7 +51,12 @@ final class JuspayKitTests: XCTestCase {
             XCTFail("Session creation failed with error: \(error)")
             throw error
         }
-    }   
+    } 
+
+    func testRetrieveOrder() async throws {
+        let order = try await juspayClient.orders.retrieve(orderId: "V5Q2kPjsMlGVgr9kcq29")
+        XCTAssertNotNil(order)
+    }
 
     func testHealthCheck() async throws {
         do {
