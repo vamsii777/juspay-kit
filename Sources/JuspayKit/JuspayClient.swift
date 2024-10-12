@@ -1,5 +1,5 @@
-import Foundation
 import AsyncHTTPClient
+import Foundation
 import NIO
 
 /// A client for interacting with the Juspay API.
@@ -12,7 +12,7 @@ import NIO
 /// ## Topics
 ///
 /// ### Initializing the Client
-/// - ``init(httpClient:apiKey:merchantId:environment:eventLoop:)``
+/// - ``init(httpClient:apiKey:merchantId:environment:)``
 ///
 /// ### API Routes
 /// - ``customers``
@@ -38,7 +38,7 @@ public actor JuspayClient {
     public let health: JuspayHealthRoutes
 
     private let apiHandler: JuspayAPIHandler
-    
+
     /// Initializes a new instance of the Juspay client.
     ///
     /// - Parameters:
@@ -46,25 +46,24 @@ public actor JuspayClient {
     ///   - apiKey: The API key for authenticating with the Juspay API.
     ///   - merchantId: The unique identifier for the merchant.
     ///   - environment: The environment to use for API requests (e.g., production or sandbox).
-    ///   - eventLoop: The event loop to use for asynchronous operations.
     ///
     /// - Important: Ensure that you keep your API key secure and do not expose it in client-side code.
     public init(httpClient: HTTPClient, apiKey: String, merchantId: String, environment: Environment) {
-        self.apiHandler = JuspayAPIHandler(httpClient: httpClient, apiKey: apiKey, merchantId: merchantId, environment: environment)
-        self.customers = JuspayCustomerRoutes(apiHandler: apiHandler)
-        self.orders = JuspayOrderRoutes(apiHandler: apiHandler)
-        self.paymentMethods = JuspayPaymentMethodRoutes(apiHandler: apiHandler)
-        self.sessions = JuspaySessionRoutes(apiHandler: apiHandler)
-        self.refunds = JuspayRefundRoutes(apiHandler: apiHandler)
-        self.health = JuspayHealthRoutes(apiHandler: apiHandler)
+        apiHandler = JuspayAPIHandler(httpClient: httpClient, apiKey: apiKey, merchantId: merchantId, environment: environment)
+        customers = JuspayCustomerRoutes(apiHandler: apiHandler)
+        orders = JuspayOrderRoutes(apiHandler: apiHandler)
+        paymentMethods = JuspayPaymentMethodRoutes(apiHandler: apiHandler)
+        sessions = JuspaySessionRoutes(apiHandler: apiHandler)
+        refunds = JuspayRefundRoutes(apiHandler: apiHandler)
+        health = JuspayHealthRoutes(apiHandler: apiHandler)
     }
-    
+
     /// Performs a health check on the Juspay API.
     ///
     /// - Returns: A boolean indicating whether the API is healthy.
     /// - Throws: An error if the health check fails.
     public func performHealthCheck() async throws -> Bool {
         // Implement health check logic here
-        return true
+        true
     }
 }
