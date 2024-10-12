@@ -1,6 +1,6 @@
 ## JuspayKit
 
-![](https://img.shields.io/badge/Swift-5.7-red.svg?style=svg)
+![](https://img.shields.io/badge/Swift-5.8-red.svg?style=svg)
 ![](https://img.shields.io/badge/SwiftNio-2-green.svg?style=svg)
 
 ### Juspay Kit is a Swift package designed to facilitate seamless integration with Juspay’s payment processing APIs. 
