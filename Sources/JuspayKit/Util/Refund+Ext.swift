@@ -9,7 +9,7 @@ extension RefundRequest {
     /// Special characters are avoided to ensure compatibility with various gateways and aggregators.
     ///
     /// - Returns: A randomly generated unique request ID string of 20 characters, starting with 'R'.
-    static func generateUniqueRequestID() -> String {
+    public static func generateUniqueRequestID() -> String {
         let characters = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         var uniqueRequestID = "R"
         var lastChar: Character?
