@@ -13,7 +13,7 @@ public struct JuspayError: Error, Codable, Sendable {
     public var errorInfo: ErrorInfo?
     
     public var localizedDescription: String {
-        return errorMessage
+        return errorMessage ?? "Unknown error"
     }
 }
 
