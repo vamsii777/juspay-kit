@@ -6,11 +6,11 @@ public struct JuspayError: Error, Codable, Sendable {
     /// A short string indicating the error code reported.
     public var errorCode: String?
     /// A human-readable message providing more details about the error.
-    public var errorMessage: String
+    public var errorMessage: String?
     /// The status ID of the error.
-    public var statusId: Int
+    public var statusId: Int?
     /// Additional information about the error.
-    public var errorInfo: ErrorInfo
+    public var errorInfo: ErrorInfo?
     
     public var localizedDescription: String {
         return errorMessage
