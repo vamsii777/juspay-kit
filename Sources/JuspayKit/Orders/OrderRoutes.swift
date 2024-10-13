@@ -1,5 +1,6 @@
 import NIO
 import NIOHTTP1
+import Foundation
 
 /// A protocol defining the order-related API routes for the Juspay payment gateway.
 ///
@@ -13,7 +14,7 @@ public protocol OrderRoutes: JuspayAPIRoute {
     ///
     /// - Throws: An error if the order retrieval fails or if there's a network issue.
     func retrieve(orderId: String) async throws -> Order
-
+    
     /// Creates a new order in the Juspay system.
     ///
     /// - Parameter parameters: A dictionary containing the necessary parameters for order creation.
@@ -29,17 +30,17 @@ public protocol OrderRoutes: JuspayAPIRoute {
 public struct JuspayOrderRoutes: OrderRoutes {
     /// The HTTP headers to be sent with each request.
     public var headers: HTTPHeaders = [:]
-
+    
     /// The API handler responsible for making network requests.
     private let apiHandler: JuspayAPIHandler
-
+    
     /// Initializes a new instance of `JuspayOrderRoutes`.
     ///
     /// - Parameter apiHandler: The `JuspayAPIHandler` instance to use for API requests.
     init(apiHandler: JuspayAPIHandler) {
         self.apiHandler = apiHandler
     }
-
+    
     /// Retrieves an existing order from the Juspay system.
     ///
     /// This method sends a GET request to the Juspay API to retrieve the order with the specified ID.
@@ -50,9 +51,15 @@ public struct JuspayOrderRoutes: OrderRoutes {
     ///
     /// - Throws: An error if the order retrieval fails or if there's a network issue.
     public func retrieve(orderId: String) async throws -> Order {
-        try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: headers)
+        var _headers = headers
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let formattedDate = dateFormatter.string(from: currentDate)
+        _headers.add(name: "version", value: formattedDate)
+        return try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: _headers)
     }
-
+    
     /// Creates a new order in the Juspay system.
     ///
     /// This method sends a POST request to the Juspay API to create a new order with the provided parameters.
@@ -68,10 +75,7 @@ public struct JuspayOrderRoutes: OrderRoutes {
     ///   - `.authenticationFailed`: If the API request fails due to authentication issues.
     ///   - `.serverError`: If the server encounters an error during order creation.
     public func create(parameters: [String: Any]) async throws -> OrderCreationResponse {
-        do {
-            return try await apiHandler.send(method: .POST, path: "orders", body: .string(parameters.percentEncoded()), headers: headers)
-        } catch let error as JuspayError {
-            throw handleJuspayError(error)
-        }
+        return try await apiHandler.send(method: .POST, path: "orders", body: .string(parameters.percentEncoded()), headers: headers)
+        
     }
 }
