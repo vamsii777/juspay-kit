@@ -37,17 +37,9 @@ public struct JuspaySessionRoutes: SessionRoutes {
     /// - Returns: A `SessionResponse` object containing the response from the session creation request.
     /// - Throws: An error if the JSON encoding fails, if the network request fails, or if the API returns an error.
     public func create(session: Session) async throws -> SessionResponse {
-        do {
-            let body = try JSONEncoder().encode(session)
-            var _headers = headers
-            _headers.add(name: "Content-Type", value: "application/json")
-            return try await apiHandler.send(method: .POST, path: "session", body: .data(body), headers: _headers)
-        } catch let error as JuspayError {
-            // Handle Juspay-specific errors
-            throw error
-        } catch {
-            // Handle other errors
-            throw error
-        }
+        let body = try JSONEncoder().encode(session)
+        var _headers = headers
+        _headers.add(name: "Content-Type", value: "application/json")
+        return try await apiHandler.send(method: .POST, path: "session", body: .data(body), headers: _headers)
     }
 }

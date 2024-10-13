@@ -13,7 +13,7 @@ extension Order {
     ///
     /// - Parameter length: The length of the order ID to generate. The default value is 20.
     /// - Returns: A randomly generated order ID string, or `nil` if the specified length is out of the valid range.
-    static func generateOrderID(length: Int = 20) -> String? {
+    public static func generateOrderID(length: Int = 20) -> String? {
         guard (2...20).contains(length) else { return nil }
         
         var orderID = "O"
