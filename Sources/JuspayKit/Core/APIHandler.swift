@@ -21,7 +21,7 @@ public extension HTTPClientRequest.Body {
     static func string(_ string: String) -> Self {
         .bytes(.init(string: string))
     }
-
+    
     /// Creates a request body from Data.
     ///
     /// - Parameter data: The Data to be used as the request body.
@@ -37,7 +37,7 @@ public enum Environment: Sendable {
     case production
     /// The sandbox environment for testing.
     case sandbox
-
+    
     /// The base URL for the selected environment.
     var baseUrl: String {
         switch self {
@@ -61,7 +61,7 @@ actor JuspayAPIHandler {
     private let environment: Environment
     /// JSON decoder for parsing API responses.
     private let decoder = JSONDecoder()
-
+    
     /// Initializes a new instance of the JuspayAPIHandler.
     ///
     /// - Parameters:
@@ -79,7 +79,7 @@ actor JuspayAPIHandler {
         decoder.dateDecodingStrategy = .iso8601
         decoder.keyDecodingStrategy = .convertFromSnakeCase
     }
-
+    
     /// Sends an API request to the Juspay service.
     ///
     /// - Parameters:
@@ -105,28 +105,28 @@ actor JuspayAPIHandler {
         ]
         let authString = "\(apiKey):".data(using: .utf8)!.base64EncodedString()
         _headers.add(name: "Authorization", value: "Basic \(authString)")
-
+        
         headers.forEach { _headers.replaceOrAdd(name: $0.name, value: $0.value) }
-
+        
         var request = HTTPClientRequest(url: "\(baseURL)\(path)?\(query)")
         request.headers = _headers
         request.method = method
         request.body = body
-
+        
         let response = try await httpClient.execute(request, timeout: .seconds(60))
         let responseData = try await response.body.collect(upTo: .max)
-
-        guard response.status == .ok else {
-            let error = try decoder.decode(JuspayError.self, from: responseData)
-            throw error
-        }
-
+        
         // Debug print the response data in human readable format
-        // if let responseString = responseData.getString(at: responseData.readerIndex, length: responseData.readableBytes) {
-        //     print("Response Data: \(responseString)")
-        // } else {
-        //     print("Failed to decode response data to string")
-        // }
+        if let responseString = responseData.getString(at: responseData.readerIndex, length: responseData.readableBytes) {
+            print("Response Data: \(responseString)")
+        } else {
+            print("Failed to decode response data to string")
+        }
+        
+        if response.status != .ok {
+            let errorResponse = try decoder.decode(JuspayError.self, from: responseData)
+            throw errorResponse
+        }
         
         return try decoder.decode(T.self, from: responseData)
     }

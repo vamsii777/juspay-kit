@@ -7,16 +7,16 @@ extension Order {
     
     /// Generates a random order ID of the specified length.
     ///
-    /// The generated order ID will be a string of random characters from the `characters` array.
-    /// The length of the order ID must be between 1 and 20 characters, inclusive.
+    /// The generated order ID will be a string of random characters from the `characters` array, always starting with 'O'.
+    /// The length of the order ID must be between 2 and 20 characters, inclusive.
     /// The function ensures that no two consecutive characters are the same and that there are no more than two sequential characters.
     ///
     /// - Parameter length: The length of the order ID to generate. The default value is 20.
     /// - Returns: A randomly generated order ID string, or `nil` if the specified length is out of the valid range.
     static func generateOrderID(length: Int = 20) -> String? {
-        guard (1...20).contains(length) else { return nil }
+        guard (2...20).contains(length) else { return nil }
         
-        var orderID = String()
+        var orderID = "O"
         var lastChar: Character?
         var sequentialCount = 0
 

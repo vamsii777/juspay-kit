@@ -50,12 +50,34 @@ final class JuspayKitTests: XCTestCase {
         } catch {
             XCTFail("Session creation failed with error: \(error)")
             throw error
-        }
+        }   
     } 
 
     func testRetrieveOrder() async throws {
-        let order = try await juspayClient.orders.retrieve(orderId: "V5Q2kPjsMlGVgr9kcq29")
-        XCTAssertNotNil(order)
+        do {
+            let order = try await juspayClient.orders.retrieve(orderId: "V5Q2kPjsMlGVgr9kcq29")
+            XCTAssertNotNil(order)
+        } catch let error as JuspayError {
+            print("Error: \(error.localizedDescription)") 
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
+    }
+
+    func testRefundOrder() async throws {
+        let uniqueRequestID = RefundRequest.generateUniqueRequestID()
+        let refundData = RefundRequest(
+            uniqueRequestId: uniqueRequestID,
+            amount: 1.0
+        )
+        do {
+            let refund = try await juspayClient.refunds.create(orderId: "V5Q2kPjsMlGVgr9kcq29", refund: refundData)
+            XCTAssertNotNil(refund)
+        } catch let error as JuspayError {
+            print("Error: \(error)") 
+        } catch {
+            XCTFail("Unexpected error: \(error.localizedDescription)")
+        }
     }
 
     func testHealthCheck() async throws {

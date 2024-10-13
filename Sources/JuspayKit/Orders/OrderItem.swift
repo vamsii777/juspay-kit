@@ -74,7 +74,7 @@ public struct Order: Codable, Sendable {
 
     /// An array of refund objects associated with this order, if any.
     /// This property is optional and may be `nil`.
-    public let refunds: [Refund]?
+    public let refunds: [RefundDetail]?
 
     /// A unique identifier for the transaction, different from `txnId`.
     /// This property is optional and may be `nil`.
@@ -96,7 +96,7 @@ public struct Order: Codable, Sendable {
     /// This property is optional and may be `nil`.
     public let card: CardInfo?
 
-    public init(id: String? = nil, orderId: String, status: String, statusId: Int, amount: Double, dateCreated: Date, customerEmail: String, customerPhone: String, customerId: String, merchantId: String, currency: String, returnUrl: String? = nil, productId: String? = nil, txnId: String? = nil, paymentMethodType: String? = nil, paymentMethod: String? = nil, authType: String? = nil, refunded: Bool, amountRefunded: Double, paymentLinks: PaymentLinks? = nil, refunds: [Refund]? = nil, txnUuid: String? = nil, txnDetail: TransactionDetail? = nil, gatewayId: Int? = nil, gatewayReferenceId: String? = nil, card: CardInfo? = nil) {
+    public init(id: String? = nil, orderId: String, status: String, statusId: Int, amount: Double, dateCreated: Date, customerEmail: String, customerPhone: String, customerId: String, merchantId: String, currency: String, returnUrl: String? = nil, productId: String? = nil, txnId: String? = nil, paymentMethodType: String? = nil, paymentMethod: String? = nil, authType: String? = nil, refunded: Bool, amountRefunded: Double, paymentLinks: PaymentLinks? = nil, refunds: [RefundDetail]? = nil, txnUuid: String? = nil, txnDetail: TransactionDetail? = nil, gatewayId: Int? = nil, gatewayReferenceId: String? = nil, card: CardInfo? = nil) {
         self.id = id
         self.orderId = orderId
         self.status = status
@@ -153,65 +153,6 @@ public struct OrderCreationResponse: Codable, Sendable {
         self.orderId = orderId
         self.paymentLinks = paymentLinks
         self.juspay = juspay
-    }
-}
-
-/// A structure representing a refund associated with an order.
-public struct Refund: Codable, Sendable {
-    /// A unique identifier for the refund request.
-    public let uniqueRequestId: String
-
-    /// The current status of the refund (e.g., "COMPLETED", "PENDING").
-    public let status: String
-
-    /// A boolean indicating whether the refund request has been sent to the payment gateway.
-    public let sentToGateway: Bool
-
-    /// The type of refund (e.g., "FULL", "PARTIAL").
-    public let refundType: String
-
-    /// The source of the refund initiation (e.g., "MERCHANT", "CUSTOMER").
-    /// This property is optional and may be `nil`.
-    public let refundSource: String?
-
-    /// A reference identifier for the refund, if applicable.
-    /// This property is optional and may be `nil`.
-    public let ref: String?
-
-    /// Information about who initiated the refund.
-    /// This property is optional and may be `nil`.
-    public let initiatedBy: String?
-
-    /// The unique identifier for the refund in the Juspay system.
-    public let id: String
-
-    /// The amount that was refunded.
-    public let amount: Double
-
-    /// The date and time when the refund was created.
-    public let created: Date
-
-    /// An error message, if the refund encountered any issues.
-    /// This property is optional and may be `nil`.
-    public let errorMessage: String?
-
-    /// An error code, if the refund encountered any issues.
-    /// This property is optional and may be `nil`.
-    public let errorCode: String?
-
-    public init(uniqueRequestId: String, status: String, sentToGateway: Bool, refundType: String, refundSource: String? = nil, ref: String? = nil, initiatedBy: String? = nil, id: String, amount: Double, created: Date, errorMessage: String? = nil, errorCode: String? = nil) {
-        self.uniqueRequestId = uniqueRequestId
-        self.status = status
-        self.sentToGateway = sentToGateway
-        self.refundType = refundType
-        self.refundSource = refundSource
-        self.ref = ref
-        self.initiatedBy = initiatedBy
-        self.id = id
-        self.amount = amount
-        self.created = created
-        self.errorMessage = errorMessage
-        self.errorCode = errorCode
     }
 }
 
