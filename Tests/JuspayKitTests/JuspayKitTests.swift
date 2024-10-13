@@ -7,6 +7,7 @@ final class JuspayKitTests: XCTestCase {
     var juspayClient: JuspayClient!
     var httpClient: HTTPClient!
     var merchantId: String!
+    var orderId: String!
 
     override func setUpWithError() throws {
         httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
@@ -20,6 +21,12 @@ final class JuspayKitTests: XCTestCase {
         }
         self.merchantId = merchantId
         juspayClient = JuspayClient(httpClient: httpClient, apiKey: apiKey, merchantId: merchantId, environment: .production)
+        
+        guard let generatedOrderId = Order.generateOrderID() else {
+            XCTFail("Failed to generate order ID")
+            throw TestError.orderIDGenerationFailed
+        }
+        self.orderId = generatedOrderId
     }
 
     override func tearDownWithError() throws {
@@ -27,13 +34,10 @@ final class JuspayKitTests: XCTestCase {
         juspayClient = nil
         httpClient = nil
         merchantId = nil
+        orderId = nil
     }
 
     func testCreateSession() async throws {
-        guard let orderId = Order.generateOrderID() else {
-            XCTFail("Failed to generate order ID")
-            throw TestError.orderIDGenerationFailed
-        }
         let sessionData = Session(
             orderId: orderId, 
             amount: "1.0", 
@@ -44,24 +48,13 @@ final class JuspayKitTests: XCTestCase {
             action: .paymentPage,
             returnUrl: "https://shop.merchant.com"
         )
-        do {
-            let session = try await juspayClient.sessions.create(session: sessionData)
-            XCTAssertNotNil(session)
-        } catch {
-            XCTFail("Session creation failed with error: \(error)")
-            throw error
-        }   
+        let session = try await juspayClient.sessions.create(session: sessionData)
+        XCTAssertNotNil(session)
     } 
 
     func testRetrieveOrder() async throws {
-        do {
-            let order = try await juspayClient.orders.retrieve(orderId: "V5Q2kPjsMlGVgr9kcq29")
-            XCTAssertNotNil(order)
-        } catch let error as JuspayError {
-            print("Error: \(error.localizedDescription)") 
-        } catch {
-            XCTFail("Unexpected error: \(error)")
-        }
+        let order = try await juspayClient.orders.retrieve(orderId: "OiVWluhiNXAQtR10BQaK")
+        XCTAssertNotNil(order)
     }
 
     func testRefundOrder() async throws {
@@ -70,24 +63,13 @@ final class JuspayKitTests: XCTestCase {
             uniqueRequestId: uniqueRequestID,
             amount: 1.0
         )
-        do {
-            let refund = try await juspayClient.refunds.create(orderId: "V5Q2kPjsMlGVgr9kcq29", refund: refundData)
-            XCTAssertNotNil(refund)
-        } catch let error as JuspayError {
-            print("Error: \(error)") 
-        } catch {
-            XCTFail("Unexpected error: \(error.localizedDescription)")
-        }
+        let refund = try await juspayClient.refunds.create(orderId: "9K7pKhlGE5o6hSJ0fJw6", refund: refundData)
+        XCTAssertNotNil(refund)
     }
 
     func testHealthCheck() async throws {
-        do {
-            let health = try await juspayClient.health.check()
-            XCTAssertNotNil(health)
-        } catch {
-            XCTFail("Health check failed with error: \(error)")
-            throw error
-        }
+        let health = try await juspayClient.health.check()
+        XCTAssertNotNil(health)
     }   
 }
 
