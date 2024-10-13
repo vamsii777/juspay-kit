@@ -1,51 +1,39 @@
 import Foundation
 
-struct JuspayError: Error, Codable, Sendable, LocalizedError {
-    let status: String
-    let errorCode: String?
-    let errorMessage: String?
-    let statusID: Int?
-    let errorInfo: ErrorInfo?
-
-    struct ErrorInfo: Codable {
-        let category: String
-        let requestID: String
-        let href: String
-        let developerMessage: String
-        let userMessage: String
-        let code: String
-        let fields: [Field]?
-
-        struct Field: Codable {
-            let fieldName: String
-            let reason: String
-
-            enum CodingKeys: String, CodingKey {
-                case fieldName = "field_name"
-                case reason
-            }
-        }
-
-        enum CodingKeys: String, CodingKey {
-            case category
-            case requestID = "request_id"
-            case href
-            case developerMessage = "developer_message"
-            case userMessage = "user_message"
-            case code
-            case fields
-        }
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case status
-        case errorCode = "error_code"
-        case errorMessage = "error_message"
-        case statusID = "status_id"
-        case errorInfo = "error_info"
-    }
+public struct JuspayError: Error, Codable, Sendable {
+    /// The type of error returned.
+    public var type: String?
+    /// A short string indicating the error code reported.
+    public var errorCode: String?
+    /// A human-readable message providing more details about the error.
+    public var errorMessage: String
+    /// The status ID of the error.
+    public var statusId: Int
+    /// Additional information about the error.
+    public var errorInfo: ErrorInfo
     
-    var parsedErrorCode: ErrorCode {
-        ErrorCode(rawValue: errorCode ?? "") ?? .unknown(errorCode ?? "")   
+    public var localizedDescription: String {
+        return errorMessage
     }
+}
+
+extension JuspayError: LocalizedError {
+    public var errorDescription: String? {
+        return errorMessage
+    }
+}
+
+public struct ErrorInfo: Codable, Sendable {
+    /// The category of the error.
+    public var category: String
+    /// The request ID associated with the error.
+    public var requestId: String
+    /// A URL to more information about the error.
+    public var href: String
+    /// A message for developers about the error.
+    public var developerMessage: String
+    /// A message for users about the error.
+    public var userMessage: String
+    /// A code associated with the error.
+    public var code: String
 }
