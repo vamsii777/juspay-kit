@@ -11,7 +11,7 @@ public struct JuspayError: Error, Codable, Sendable {
     public var statusId: Int?
     /// Additional information about the error.
     public var errorInfo: ErrorInfo?
-    
+
     public var localizedDescription: String {
         return errorMessage ?? "Unknown error"
     }

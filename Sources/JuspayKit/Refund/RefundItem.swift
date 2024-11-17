@@ -8,16 +8,21 @@ public struct RefundRequest: Codable, Sendable {
     ///
     /// This identifier helps in tracking and referencing the specific refund request.
     public let uniqueRequestId: String
-    
+
     /// The amount to be refunded.
     ///
     /// This value should be a positive number representing the refund amount in the original transaction's currency.
     public let amount: Double
-    
+
     private enum CodingKeys: String, CodingKey {
         case uniqueRequestId = "unique_request_id"
         case amount
     }
+
+    public init(uniqueRequestId: String, amount: Double) {
+        self.uniqueRequestId = uniqueRequestId
+        self.amount = amount
+    }   
 }
 
 /// A structure representing the response to a refund request in the Juspay system.
@@ -67,7 +72,7 @@ public struct RefundResponse: Codable, Sendable {
     public let bankPg: String?
     public let bankErrorMessage: String?
     public let bankErrorCode: String?
-    
+
     public struct TransactionDetail: Codable, Sendable {
         public let txnUuid: String?
         public let txnId: String?
@@ -87,7 +92,7 @@ public struct RefundResponse: Codable, Sendable {
         public let created: String?
         public let statusId: Int?
     }
-    
+
     public struct PaymentGatewayResponse: Codable, Sendable {
         public let txnId: String?
         public let rrn: String?
@@ -97,7 +102,7 @@ public struct RefundResponse: Codable, Sendable {
         public let created: String?
         public let authIdCode: String?
     }
-    
+
     public struct CardDetails: Codable, Sendable {
         public let usingToken: Bool?
         public let usingSavedCard: Bool?

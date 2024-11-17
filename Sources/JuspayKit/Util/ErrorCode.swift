@@ -10,11 +10,11 @@ public enum ErrorCode: Error, Codable, Sendable, Equatable {
     case accessDenied
     case badRequest
     case unknown(String)
-    
+
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         let rawValue = try container.decode(String.self)
-        
+
         switch rawValue {
         case "duplicate.call":
             self = .duplicateCall
@@ -36,7 +36,7 @@ public enum ErrorCode: Error, Codable, Sendable, Equatable {
             self = .unknown(rawValue)
         }
     }
-    
+
     public init(rawValue: String) {
         switch rawValue {
         case "duplicate.call":
@@ -59,7 +59,7 @@ public enum ErrorCode: Error, Codable, Sendable, Equatable {
             self = .unknown(rawValue)
         }
     }
-    
+
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
@@ -79,7 +79,7 @@ public enum ErrorCode: Error, Codable, Sendable, Equatable {
             try container.encode("access_denied")
         case .badRequest:
             try container.encode("Bad request.")
-        case .unknown(let rawValue):
+        case let .unknown(rawValue):
             try container.encode(rawValue)
         }
     }
