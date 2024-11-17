@@ -15,7 +15,6 @@ extension Order {
     /// - Returns: A randomly generated order ID string, or `nil` if the specified length is out of the valid range.
     public static func generateOrderID(length: Int = 20) -> String? {
         guard (2 ... 20).contains(length) else { return nil }
-
         var orderID = "O"
         var lastChar: Character?
         var sequentialCount = 0
