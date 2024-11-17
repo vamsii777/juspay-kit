@@ -1,8 +1,8 @@
 import Foundation
 
 public enum SessionAction: String, Codable, Sendable {
-    case paymentPage = "paymentPage"
-    case paymentManagement = "paymentManagement"
+    case paymentPage
+    case paymentManagement
 }
 
 public struct Session: Codable, Sendable {

@@ -60,20 +60,19 @@ public struct Maintenance: Codable, Sendable {
     public let url: String
 }
 
-
 public enum HealthStatus: String, Codable, Sendable {
     case up = "UP"
-    case hasIssues = "HASISSUES" 
+    case hasIssues = "HASISSUES"
     case underMaintenance = "UNDERMAINTENANCE"
     case identified = "IDENTIFIED"
     case investigating = "INVESTIGATING"
     case monitoring = "MONITORING"
     case resolved = "RESOLVED"
     case majorOutage = "MAJOROUTAGE"
-    case partialOutage = "PARTIALOUTAGE"    
-    case minorOutage = "MINOROUTAGE"     
-    case operational = "OPERATIONAL"    
+    case partialOutage = "PARTIALOUTAGE"
+    case minorOutage = "MINOROUTAGE"
+    case operational = "OPERATIONAL"
     case notStartedYet = "NOTSTARTEDYET"
     case inProgress = "INPROGRESS"
-    case completed = "COMPLETED"    
+    case completed = "COMPLETED"
 }

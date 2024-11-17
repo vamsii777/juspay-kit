@@ -1,6 +1,6 @@
 import Foundation
 
-extension RefundRequest {
+public extension RefundRequest {
     /// Generates a unique request ID for the refund request.
     ///
     /// The generated request ID will be a string of 20 characters, always starting with 'R',
@@ -9,7 +9,7 @@ extension RefundRequest {
     /// Special characters are avoided to ensure compatibility with various gateways and aggregators.
     ///
     /// - Returns: A randomly generated unique request ID string of 20 characters, starting with 'R'.
-    public static func generateUniqueRequestID() -> String {
+    static func generateUniqueRequestID() -> String {
         let characters = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         var uniqueRequestID = "R"
         var lastChar: Character?
@@ -17,7 +17,7 @@ extension RefundRequest {
 
         while uniqueRequestID.count < 20 {
             guard let randomChar = characters.randomElement() else { continue }
-            
+
             // Check for sequential characters
             if let last = lastChar, let lastIndex = characters.firstIndex(of: last), let currentIndex = characters.firstIndex(of: randomChar) {
                 if currentIndex == lastIndex + 1 {
@@ -26,14 +26,14 @@ extension RefundRequest {
                     sequentialCount = 0
                 }
             }
-            
+
             // Avoid adding the same character consecutively or more than two sequential characters
             if randomChar != lastChar && sequentialCount < 2 {
                 uniqueRequestID.append(randomChar)
                 lastChar = randomChar
             }
         }
-        
+
         return uniqueRequestID
     }
 }
