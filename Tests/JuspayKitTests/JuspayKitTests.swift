@@ -48,9 +48,15 @@ struct JuspayKitTests {
         #expect(session != nil)
     }
 
+    @Test("List all payment methods")
+    func listPaymentMethods() async throws {
+        let paymentMethods = try await juspayClient.paymentMethods.list()
+        #expect(paymentMethods != nil)
+    }
+
     @Test("Retrieve an order")
     func retrieveOrder() async throws {
-        let order = try await juspayClient.orders.retrieve(orderId: "OiVWluhiNXAQtR10BQaK")
+        let order = try await juspayClient.orders.retrieve(orderId: "OBug0anmAxDG2ncPhBsA", customerId: "4C2AD8F11484CE")
         #expect(order != nil)
     }
 

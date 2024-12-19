@@ -13,7 +13,7 @@ public protocol OrderRoutes: JuspayAPIRoute {
     /// - Returns: An `Order` object representing the retrieved order.
     ///
     /// - Throws: An error if the order retrieval fails or if there's a network issue.
-    func retrieve(orderId: String) async throws -> Order
+    func retrieve(orderId: String, customerId: String) async throws -> Order
 
     /// Creates a new order in the Juspay system.
     ///
@@ -50,13 +50,9 @@ public struct JuspayOrderRoutes: OrderRoutes {
     /// - Returns: An `Order` object representing the retrieved order.
     ///
     /// - Throws: An error if the order retrieval fails or if there's a network issue.
-    public func retrieve(orderId: String) async throws -> Order {
+    public func retrieve(orderId: String, customerId: String) async throws -> Order {
         var _headers = headers
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let formattedDate = dateFormatter.string(from: currentDate)
-        _headers.add(name: "version", value: formattedDate)
+        _headers.add(name: "x-routing-id", value: customerId)
         return try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: _headers)
     }
 
