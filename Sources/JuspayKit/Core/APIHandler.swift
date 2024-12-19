@@ -103,25 +103,17 @@ actor JuspayAPIHandler {
             "x-merchantid": merchantId,
             "Content-Type": "application/x-www-form-urlencoded",
         ]
-        let authString = "\(apiKey):".data(using: .utf8)!.base64EncodedString()
-        _headers.add(name: "Authorization", value: "Basic \(authString)")
-
+    
         headers.forEach { _headers.replaceOrAdd(name: $0.name, value: $0.value) }
 
         var request = HTTPClientRequest(url: "\(baseURL)\(path)?\(query)")
         request.headers = _headers
+        request.setBasicAuth(username: apiKey, password: "")
         request.method = method
         request.body = body
-
+        
         let response = try await httpClient.execute(request, timeout: .seconds(60))
         let responseData = try await response.body.collect(upTo: .max)
-
-//        // Debug print the response data in human readable format
-//        if let responseString = responseData.getString(at: responseData.readerIndex, length: responseData.readableBytes) {
-//            print("Response Data: \(responseString)")
-//        } else {
-//            print("Failed to decode response data to string")
-//        }
 
         guard response.status == .ok else {
             let error = try decoder.decode(JuspayError.self, from: responseData)
