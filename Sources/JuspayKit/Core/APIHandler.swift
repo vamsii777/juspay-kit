@@ -113,7 +113,7 @@ actor JuspayAPIHandler {
         request.body = body
         
         let response = try await httpClient.execute(request, timeout: .seconds(60))
-        let responseData = try await response.body.collect(upTo: .max)
+        let responseData = try await response.body.collect(upTo:  1024 * 1024 * 100) // 500mb to account for data downloads.
 
         guard response.status == .ok else {
             let error = try decoder.decode(JuspayError.self, from: responseData)
