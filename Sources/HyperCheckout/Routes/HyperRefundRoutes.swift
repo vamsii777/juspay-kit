@@ -31,7 +31,7 @@ import NIOHTTP1
 ///
 /// print("Refund Status: \(response.status)")
 /// ```
-public protocol HyperRefundRoutes {
+public protocol HyperRefundRoutes: Sendable {
     /// Requests a refund for an order.
     ///
     /// - Parameters:

@@ -29,7 +29,7 @@ import NIOHTTP1
 ///
 /// let response = try await hyperCheckout.sessions.create(session: session)
 /// ```
-public protocol HyperSessionRoutes {
+public protocol HyperSessionRoutes: Sendable {
     /// Creates a new payment session.
     ///
     /// - Parameter session: The session configuration.
