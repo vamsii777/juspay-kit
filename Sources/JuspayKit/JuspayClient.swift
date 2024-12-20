@@ -2,27 +2,48 @@ import AsyncHTTPClient
 import Foundation
 import NIO
 
-/// A client for interacting with the Juspay API.
+/// A client for interacting with the Juspay payment processing API.
 ///
-/// The `JuspayClient` provides a thread-safe, concurrent interface to access various Juspay API endpoints,
-/// including customers, orders, payment methods, sessions, and refunds.
-///
-/// - Important: This client requires proper initialization with valid credentials and an HTTP client.
+/// The `JuspayClient` is the main entry point for making requests to Juspay's payment gateway.
+/// It provides access to various API routes for managing orders, sessions, payments, refunds and more.
 ///
 /// ## Topics
 ///
-/// ### Initializing the Client
+/// ### Creating a Client
 /// - ``init(httpClient:apiKey:merchantId:environment:)``
-///
+/// 
 /// ### API Routes
-/// - ``customers``
 /// - ``orders``
+/// - ``sessions`` 
 /// - ``paymentMethods``
-/// - ``sessions``
 /// - ``refunds``
+/// - ``customers``
+/// - ``health``
 ///
-/// ### Supporting Types
-/// - ``Environment``
+/// ### Example
+///
+/// ```swift
+/// let client = JuspayClient(
+///     httpClient: HTTPClient.shared,
+///     apiKey: "your_api_key", 
+///     merchantId: "your_merchant_id",
+///     environment: .sandbox
+/// )
+///
+/// // Create a new payment session
+/// let session = Session(
+///     orderId: "ORDER123",
+///     amount: "100.00",
+///     customerId: "CUST123",
+///     customerEmail: "customer@example.com",
+///     customerPhone: "1234567890",
+///     paymentPageClientId: merchantId,
+///     action: .paymentPage,
+///     returnUrl: "https://your-return-url.com"
+/// )
+///
+/// let response = try await client.sessions.create(session: session)
+/// ```
 public actor JuspayClient {
     /// The route for customer-related operations.
     public let customers: JuspayCustomerRoutes

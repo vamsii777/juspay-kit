@@ -16,6 +16,18 @@ public protocol RefundRoutes: JuspayAPIRoute {
     ///
     /// - Throws: An error if the refund creation fails or if there's a network issue.
     func create(orderId: String, refund: RefundRequest) async throws -> RefundResponse
+
+    /// Creates a new refund request for a specific order.
+    ///
+    /// - Parameters:
+    ///   - orderId: The unique identifier of the order for which the refund is being requested.
+    ///   - routingId: The unique identifier of the routing in the Juspay system. This is used to identify the customer. Suggested to use customerId.
+    ///   - refund: A `RefundRequest` object containing the details of the refund request.
+    ///
+    /// - Returns: A `RefundResponse` object representing the result of the refund request.
+    ///
+    /// - Throws: An error if the refund creation fails or if there's a network issue.
+    func create(orderId: String, routingId: String, refund: RefundRequest) async throws -> RefundResponse
 }
 
 /// A concrete implementation of the `RefundRoutes` protocol for interacting with Juspay's refund API.
@@ -54,6 +66,30 @@ public struct JuspayRefundRoutes: RefundRoutes {
         _headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
         _headers.add(name: "version", value: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none))
         
+        return try await apiHandler.send(method: .POST, path: path, body: .string(body), headers: _headers)
+    }
+
+    /// Creates a new refund request for a specific order.
+    ///
+    /// This method constructs the necessary request body and headers, then sends a POST request
+    /// to the Juspay API to create a new refund for the specified order.
+    ///
+    /// - Parameters:
+    ///   - orderId: The unique identifier of the order for which the refund is being requested.
+    ///   - routingId: The unique identifier of the routing in the Juspay system. This is used to identify the customer. Suggested to use customerId.
+    ///   - refund: A `RefundRequest` object containing the details of the refund request.
+    ///
+    /// - Returns: A `RefundResponse` object representing the result of the refund request.
+    ///
+    /// - Throws: An error if the refund creation fails or if there's a network issue.  
+    public func create(orderId: String, routingId: String, refund: RefundRequest) async throws -> RefundResponse {
+        let path = "orders/\(orderId)/refunds"
+        var body = "unique_request_id=\(refund.uniqueRequestId)&amount=\(refund.amount)"
+        body = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? body
+        
+        var _headers = headers
+        _headers.add(name: "Content-Type", value: "application/x-www-form-urlencoded")
+        _headers.add(name: "x-routing-id", value: routingId)
         return try await apiHandler.send(method: .POST, path: path, body: .string(body), headers: _headers)
     }
 }

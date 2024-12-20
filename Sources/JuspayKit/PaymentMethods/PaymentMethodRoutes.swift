@@ -1,10 +1,38 @@
 import NIO
 import NIOHTTP1
 
-/// A protocol defining the payment method-related API routes for the Juspay payment gateway.
+/// Protocol defining payment method API routes.
 ///
-/// This protocol extends `JuspayAPIRoute` and provides methods for retrieving available payment methods
-/// with various options to customize the response.
+/// The `PaymentMethodRoutes` protocol provides methods for retrieving available
+/// payment methods from Juspay's payment gateway.
+///
+/// ## Topics
+///
+/// ### Listing Payment Methods
+/// - ``list(addEmandatePaymentMethods:checkWalletDirectDebitSupport:addSupportedReferenceIds:addTpvPaymentMethods:addOutage:)``
+///
+/// ### Payment Method Types
+/// - ``PaymentMethod``
+/// - ``EmadatePaymentMethod`` 
+/// - ``DirectWalletDebitSupportedPaymentMethod``
+///
+/// ### Example
+///
+/// ```swift
+/// // List all available payment methods
+/// let methods = try await client.paymentMethods.list(
+///     addEmandatePaymentMethods: true,
+///     checkWalletDirectDebitSupport: true,
+///     addOutage: true
+/// )
+///
+/// // Access payment method details
+/// for method in methods.paymentMethods {
+///     print("Payment Method: \(method.paymentMethod)")
+///     print("Type: \(method.paymentMethodType)")
+///     print("Description: \(method.description)")
+/// }
+/// ```
 public protocol PaymentMethodRoutes: JuspayAPIRoute {
     /// Retrieves a list of available payment methods from the Juspay system.
     ///

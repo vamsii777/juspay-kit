@@ -2,18 +2,57 @@ import Foundation
 import NIO
 import NIOHTTP1
 
-/// A protocol defining the order-related API routes for the Juspay payment gateway.
+/// Protocol defining order-related API routes.
 ///
-/// This protocol extends `JuspayAPIRoute` and provides methods for creating and retrieving order information.
+/// The `OrderRoutes` protocol provides methods for creating and retrieving orders
+/// through Juspay's payment gateway.
+///
+/// ## Topics
+///
+/// ### Creating Orders
+/// - ``create(parameters:)``
+///
+/// ### Retrieving Orders  
+/// - ``retrieve(orderId:)``
+/// - ``retrieve(orderId:customerId:)``
+/// - ``retrieve(orderId:routingId:)``
+///
+/// ### Example
+///
+/// ```swift
+/// // Create a new order
+/// let params: [String: Any] = [
+///     "order_id": "ORDER123",
+///     "amount": "100.00",
+///     "customer_id": "CUST123",
+///     "customer_email": "customer@example.com",
+///     "return_url": "https://merchant.com/return"
+/// ]
+///
+/// let order = try await client.orders.create(parameters: params)
+///
+/// // Retrieve an existing order
+/// let existingOrder = try await client.orders.retrieve(orderId: "ORDER123")
+/// ```
 public protocol OrderRoutes: JuspayAPIRoute {
+    /// Retrieves an existing order from the Juspay system.
+    ///
+    /// - Parameter orderId: The unique identifier of the order in the Juspay system.
+    /// - Parameter routingId: The unique identifier of the routing in the Juspay system. This is used to identify the customer. Suggested to use customerId.
+    ///
+    /// - Returns: An `Order` object representing the retrieved order.
+    ///
+    /// - Throws: An error if the order retrieval fails or if there's a network issue.
+    func retrieve(orderId: String, routingId: String) async throws -> Order
+
     /// Retrieves an existing order from the Juspay system.
     ///
     /// - Parameter orderId: The unique identifier of the order in the Juspay system.
     ///
     /// - Returns: An `Order` object representing the retrieved order.
     ///
-    /// - Throws: An error if the order retrieval fails or if there's a network issue.
-    func retrieve(orderId: String, customerId: String) async throws -> Order
+    /// - Throws: An error if the order retrieval fails or if there's a network issue.  
+    func retrieve(orderId: String) async throws -> Order
 
     /// Creates a new order in the Juspay system.
     ///
@@ -46,14 +85,34 @@ public struct JuspayOrderRoutes: OrderRoutes {
     /// This method sends a GET request to the Juspay API to retrieve the order with the specified ID.
     ///
     /// - Parameter orderId: The unique identifier of the order in the Juspay system.
+    /// - Parameter routingId: The unique identifier of the routing in the Juspay system. This is used to identify the customer. Suggested to use customerId.
     ///
     /// - Returns: An `Order` object representing the retrieved order.
     ///
     /// - Throws: An error if the order retrieval fails or if there's a network issue.
-    public func retrieve(orderId: String, customerId: String) async throws -> Order {
+    public func retrieve(orderId: String, routingId: String) async throws -> Order {
         var _headers = headers
-        _headers.add(name: "x-routing-id", value: customerId)
+        _headers.add(name: "x-routing-id", value: routingId)
         return try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: _headers)
+    }
+
+    /// Retrieves an existing order from the Juspay system.
+    ///
+    /// This method sends a GET request to the Juspay API to retrieve the order with the specified ID.
+    ///
+    /// - Parameter orderId: The unique identifier of the order in the Juspay system.
+    ///
+    /// - Returns: An `Order` object representing the retrieved order.
+    ///
+    /// - Throws: An error if the order retrieval fails or if there's a network issue.
+    public func retrieve(orderId: String) async throws -> Order {
+        var _headers = headers
+        let currentDate = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let formattedDate = dateFormatter.string(from: currentDate)
+        _headers.add(name: "version", value: formattedDate)
+        return try await apiHandler.send(method: .GET, path: "orders/\(orderId)", headers: headers)
     }
 
     /// Creates a new order in the Juspay system.

@@ -14,6 +14,10 @@ let package = Package(
             name: "JuspayKit",
             targets: ["JuspayKit"]
         ),
+        .library(
+            name: "HyperCheckout",
+            targets: ["HyperCheckout"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.3.0"),
@@ -29,9 +33,18 @@ let package = Package(
             ],
             swiftSettings: swiftSettings
         ),
+        .target(
+            name: "HyperCheckout",
+            dependencies: ["JuspayKit"],
+            swiftSettings: swiftSettings
+        ),
         .testTarget(
             name: "JuspayKitTests",
-            dependencies: ["JuspayKit"]
+            dependencies: ["JuspayKit", "HyperCheckout"]
+        ),
+        .testTarget(
+            name: "HyperCheckoutTests",
+            dependencies: ["HyperCheckout", "JuspayKit"]
         )
     ]
 )
