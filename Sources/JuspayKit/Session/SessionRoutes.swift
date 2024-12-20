@@ -2,9 +2,42 @@ import Foundation
 import NIO
 import NIOHTTP1
 
-/// A protocol defining the routes for session-related operations in the Juspay API.
+/// Protocol defining session API routes.
 ///
-/// This protocol extends `JuspayAPIRoute` and provides a method for creating a new session.
+/// The `SessionRoutes` protocol provides methods for creating payment sessions
+/// through Juspay's payment gateway.
+///
+/// ## Topics
+///
+/// ### Creating Sessions
+/// - ``create(session:)``
+///
+/// ### Session Types
+/// - ``Session``
+/// - ``SessionAction``
+/// - ``SessionResponse``
+///
+/// ### Example
+///
+/// ```swift
+/// // Create a new payment session
+/// let session = Session(
+///     orderId: "ORDER123",
+///     amount: "100.00", 
+///     customerId: "CUST123",
+///     customerEmail: "customer@example.com",
+///     customerPhone: "1234567890",
+///     paymentPageClientId: merchantId,
+///     action: .paymentPage,
+///     returnUrl: "https://merchant.com/return"
+/// )
+///
+/// let response = try await client.sessions.create(session: session)
+///
+/// // Access session details
+/// print("Session ID: \(response.id)")
+/// print("Client Auth Token: \(response.clientAuthToken)")
+/// ```
 public protocol SessionRoutes: JuspayAPIRoute {
     /// Creates a new session with the provided session information.
     ///

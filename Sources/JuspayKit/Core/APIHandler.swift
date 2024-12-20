@@ -49,7 +49,36 @@ public enum Environment: Sendable {
     }
 }
 
-/// Handles API requests to the Juspay service.
+/// Handles API requests to the Juspay payment gateway.
+///
+/// The `JuspayAPIHandler` is responsible for making HTTP requests to Juspay's API endpoints.
+/// It handles authentication, request construction, and response parsing.
+///
+/// ## Topics
+///
+/// ### Making Requests
+/// - ``send(_:method:path:query:body:headers:)``
+///
+/// ### Environment Configuration  
+/// - ``Environment``
+/// - ``Environment/production``
+/// - ``Environment/sandbox``
+///
+/// ### Example
+/// ```swift
+/// let handler = JuspayAPIHandler(
+///     httpClient: client,
+///     apiKey: "key",
+///     merchantId: "merchant",
+///     environment: .sandbox
+/// )
+///
+/// let response: PaymentMethodsResponse = try await handler.send(
+///     method: .GET,
+///     path: "merchants/guest/paymentmethods",
+///     headers: headers
+/// )
+/// ```
 actor JuspayAPIHandler {
     /// The HTTP client used for network requests.
     private let httpClient: HTTPClient
