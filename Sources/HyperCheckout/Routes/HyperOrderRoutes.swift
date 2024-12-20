@@ -23,7 +23,7 @@ import NIOHTTP1
 ///
 /// print("Order Status: \(order.status)")
 /// ```
-public protocol HyperOrderRoutes {
+public protocol HyperOrderRoutes: Sendable {
     /// Retrieves the status of an order.
     ///
     /// - Parameters:
